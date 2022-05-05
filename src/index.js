@@ -45,7 +45,7 @@ const _fsCp = fs.cp ? promisify(fs.cp) : null;
 main
 ***************/
 
-export default class ff {
+export class ff {
   /**
    * @param  {...string} paths paths to be combined
    * @returns {string} path
