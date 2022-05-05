@@ -46,21 +46,44 @@ main
 ***************/
 
 export default class ff {
+  /**
+   * @param  {...string} paths paths to be combined
+   * @returns {string} path
+   */
   static path(...paths) {
     return path.normalize(path.resolve(...paths));
   }
+  /**
+   * @param  {string} path
+   * @param  {string} [fileName=''] filename can be in path or here
+   * @returns {Promise<void>}
+   */
   static async touch(path, fileName = '') {
     return this.write('', path, fileName);
   }
+  /**
+   * @param  {string} src
+   * @param  {string} dest
+   * @return {Promise<void>}
+   */
   static async mv(src, dest) {
     const srcPath = this.path(src);
     const destPath = this.path(dest);
     await this.cp(srcPath, destPath);
     await this.rmrf(srcPath)
   }
+  /**
+   * @param  {string} path
+   * @return {Promise<void>}
+   */
   static async rmrf(path) {
     await fsRm(path, { recursive: true, force: true });
   }
+  /**
+   * @param  {string} src
+   * @param  {string} dest
+   * @return {Promise<void>}
+   */
   static async cp(src, dest) {
     if (_fsCp) {
       return await _fsCp(src, dest, { recursive: true });
@@ -68,39 +91,88 @@ export default class ff {
       return await _cp_polyfill(src, dest);
     }
   }
+  /**
+   * @param  {string} path
+   * @param  {string} [fileName=''] filename can be in path or here
+   * @returns {Promise<string>} file data as string
+   */
   static async read(path, fileName = '') {
     const fullPath = this.path(path, fileName);
     const buffer = await fsReadFile(fullPath);
     return buffer.toString();
   }
+  /**
+   * @param  {string} data
+   * @param  {string} path
+   * @param  {string} [fileName=''] filename can be in path or here
+   * @returns {Promise<void>}
+   */
   static async write(data, path, fileName = '') {
     const fullPath = this.path(path, fileName);
     await fsWriteFile(fullPath, data);
   }
+  /**
+   * @param  {string} path
+   * @returns {Promise<Array<string>>}
+   */
   static async readdir(path) {
     const fullPath = this.path(path);
     return await fsReaddir(fullPath, { withFileTypes: true });
   }
+  /**
+   * @param  {string} path
+   * @returns {Promise<void>}
+   */
   static async mkdir(path) {
     const fullPath = this.path(path);
     return await fsMkdir(fullPath, { recursive: true });
   }
+  /**
+   * @param  {string} data
+   * @param  {string} path
+   * @param  {string} [fileName=''] filename can be in path or here
+   * @returns {Promise<void>}
+  */
   static async append(data, path, fileName = '') {
     const fullPath = this.path(path, fileName);
     return await fsAppendFile(fullPath, data)
   }
+  /**
+   * @param  {string} path
+   * @returns {Promise<object>} stats
+   */
   static async stat(path) {
     const fullPath = this.path(path);
     return await fsStat(fullPath);
   }
+  /**
+   * @param  {string} path
+   * @param  {string} [fileName=''] filename can be in path or here
+   * @returns {Promise<string>}
+  */
   static async readJson(path, fileName = '') {
     const fullPath = this.path(path, fileName);
     const dataStr = await this.read(fullPath);
     return JSON.parse(dataStr);
   }
+  /**
+   * @param  {object} obj
+   * @param  {string} path
+   * @param  {string} [fileName='']
+   * @param  {number} [spaces=0]
+   * @returns  {Promise<void>}
+   */
   static async writeJson(obj, path, fileName = '', spaces = 0) {
     await this.write(JSON.stringify(obj, null, spaces), path, fileName);
   }
+  /**
+   * @param  {string} path
+   * @param  {string} [fileName='']
+   * @param  {boolean} [parseLines=true]
+   * @param  {string} [delimiter=',']
+   * @param  {boolean} [stripHeader=true]
+   * @returns  {Promise<Array<string>>}
+   */
   static async readCsv(path, fileName = '', parseLines = true, delimiter = ',', stripHeader = true) {
     const data = await this.read(path, fileName);
     if (data === '') return [];
@@ -116,10 +188,25 @@ export default class ff {
     }
     return result;
   }
+  /**
+   * @param  {object} data
+   * @param  {Array<string>} fields
+   * @param  {string} path
+   * @param  {string} [fileName='']
+   * @param  {string} [delimiter=',']
+   * @returns  {Promise<void>}
+   */
   static async writeCsv(data, fields, path, fileName = '', delimiter = ',') {
     const dataStr = _convertArrCsv(data, fields, delimiter);
     return await this.write(dataStr, path, fileName);
   }
+  /**
+   * @param  {object} data
+   * @param  {string} path
+   * @param  {string} [fileName='']
+   * @param  {string} [delimiter=',']
+   * @returns  {Promise<void>}
+   */
   static async appendCsv(data, path, fileName = '', delimiter = ',') {
     const dataStr = _convertArrCsv(data, null, delimiter);
     return await this.append(dataStr, path, fileName);
