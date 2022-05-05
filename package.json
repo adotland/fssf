@@ -21,7 +21,9 @@
     "url": "git+https://github.com/adotland/fssf.git"
   },
   "keywords": [
-    "fs"
+    "fs",
+    "csv",
+    "json"
   ],
   "author": "adotland",
   "license": "ISC",
