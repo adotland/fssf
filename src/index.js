@@ -93,12 +93,12 @@ export default class ff {
     const fullPath = this.path(path);
     return await fsStat(fullPath);
   }
-  static async readjson(path, fileName = '') {
+  static async readJson(path, fileName = '') {
     const fullPath = this.path(path, fileName);
     const dataStr = await this.read(fullPath);
     return JSON.parse(dataStr);
   }
-  static async writejson(obj, path, fileName = '', spaces = 0) {
+  static async writeJson(obj, path, fileName = '', spaces = 0) {
     await this.write(JSON.stringify(obj, null, spaces), path, fileName);
   }
   static async readCsv(path, fileName = '', parseLines = true, delimiter = ',', stripHeader = true) {
