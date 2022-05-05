@@ -117,7 +117,7 @@ export default class ff {
    */
   static async readdir(path) {
     const fullPath = this.path(path);
-    return await fsReaddir(fullPath, { withFileTypes: true });
+    return await fsReaddir(fullPath);
   }
   /**
    * @param  {string} path
