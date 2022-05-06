@@ -1,11 +1,12 @@
 # fssf
+
+> provides a simple api for common file based operations
+
 [![NPM Version][npm-image]][npm-url]
 [![License: ISC][license-img]](LICENSE)
 [![Node.js Version][node-version-image]][node-version-url]
 
 Promise based wrapper for node:fs
-
-provides a simple syntactic sugar style api for common file based operations
 
 handles ```.csv``` files
 

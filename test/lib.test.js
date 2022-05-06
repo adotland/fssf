@@ -202,7 +202,6 @@ describe('general tests', () => {
     const data = fs.readFileSync(path.join(src, fileNameCsv));
     expect(data).toBeDefined();
     const formatted = data.toString().replace(/\n/g,' ');
-    console.log(data.toString());
     expect(formatted).toBe('header1,header2 value1,value2 value3,value4 value5,value6 ');
   })
 });
