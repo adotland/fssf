@@ -5,6 +5,8 @@
 
 Promise based wrapper for node:fs
 
+provides a simple syntactic sugar style api for common file based operations
+
 handles ```.csv``` files
 
 handles ```.json``` files
@@ -28,7 +30,7 @@ const { ff } = require('fssf');
 ```
 ```js
 // es6
-import { ff } = require('fssf')
+import { ff } from 'fssf'
 ```
 ```js
 const data = { arrayList: [[1, 1], [2, 2]] };

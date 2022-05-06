@@ -189,7 +189,7 @@ export class ff {
     return result;
   }
   /**
-   * @param  {object} data
+   * @param  {Array<Array<any>>} data
    * @param  {Array<string>} fields
    * @param  {string} path
    * @param  {string} [fileName='']
@@ -201,7 +201,7 @@ export class ff {
     return await this.write(dataStr, path, fileName);
   }
   /**
-   * @param  {object} data
+   * @param  {Array<Array<any>>} data
    * @param  {string} path
    * @param  {string} [fileName='']
    * @param  {string} [delimiter=',']
@@ -209,6 +209,6 @@ export class ff {
    */
   static async appendCsv(data, path, fileName = '', delimiter = ',') {
     const dataStr = _convertArrCsv(data, null, delimiter);
-    return await this.append(dataStr, path, fileName);
+    return await this.append('\n' + dataStr, path, fileName);
   }
 }
