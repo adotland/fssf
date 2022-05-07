@@ -1,6 +1,6 @@
-const path = require('path');
-const { promisify } = require('util');
-const fs = require('fs');
+import path from 'path';
+import { promisify } from 'util';
+import fs from 'fs';
 const fsReadFile = promisify(fs.readFile);
 const fsWriteFile = promisify(fs.writeFile);
 const fsCopyFile = promisify(fs.copyFile);
