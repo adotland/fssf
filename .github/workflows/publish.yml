@@ -1,4 +1,4 @@
-name: Publish package to npm
+name: shipit
 
 on:
   push:
@@ -19,6 +19,7 @@ jobs:
 
       - run: npm install
       - run: npm run build
+      - run: npm test
 
       - run: npm publish --access public
         env:
