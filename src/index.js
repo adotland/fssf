@@ -51,7 +51,7 @@ export class ff {
    * @returns {string} path
    */
   static path(...paths) {
-    return path.normalize(path.resolve(...paths));
+    return path.join(...paths);
   }
   /**
    * @param  {string} path
