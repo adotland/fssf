@@ -15,7 +15,8 @@
   },
   "scripts": {
     "build": "rm -fr dist/* && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && ./finishBuild",
-    "test": "jest"
+    "test": "jest",
+    "bnt": "npm run build && npm run test"
   },
   "repository": {
     "type": "git",

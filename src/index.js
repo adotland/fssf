@@ -38,6 +38,15 @@ const _cp_polyfill = async (src, dest) => {
   }
 };
 
+const _trim = (str, delimiter) => {
+  var re = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+  if (delimiter.match(re)) {
+    return str;
+  } else {
+    return str.replace(re, '');
+  }
+}
+
 // fs.cp (v16.7.0)
 const _fsCp = fs.cp ? promisify(fs.cp) : null;
 
@@ -176,14 +185,15 @@ export class ff {
   static async readCsv(path, fileName = '', parseLines = true, delimiter = ',', stripHeader = true) {
     const data = await this.read(path, fileName);
     if (data === '') return [];
-    let result = data.split('\n').map(d => d.trim());
+    let result = data.split('\n').map(d => _trim(d, delimiter));
     if (stripHeader) {
       result.shift();
     }
     if (parseLines) {
-      result = result.map(line => line.trim().split(delimiter));
+      result = result.map(line => line.split(delimiter));
     }
-    if (result[result.length - 1][0] === '') {
+    const lastLine = result[result.length - 1];
+    if (lastLine && lastLine.length === 1 && typeof(lastLine[0]) === 'string' && lastLine[0] === '') {
       result.pop();
     }
     return result;
