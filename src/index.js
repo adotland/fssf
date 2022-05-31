@@ -9,6 +9,7 @@ const fsRm = promisify(fs.rm); // v14.14.0
 const fsMkdir = promisify(fs.mkdir);
 const fsReaddir = promisify(fs.readdir);
 const fsAppendFile = promisify(fs.appendFile);
+const fsRename = promisify(fs.rename);
 
 /***************
 helpers
@@ -80,6 +81,11 @@ export class ff {
     const destPath = this.path(dest);
     await this.cp(srcPath, destPath);
     await this.rmrf(srcPath)
+  }
+  static async rename(src, dest) {
+    const srcPath = this.path(src);
+    const destPath = this.path(dest);
+    await fsRename(srcPath, destPath);
   }
   /**
    * @param  {string} path

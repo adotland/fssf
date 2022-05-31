@@ -67,6 +67,18 @@ describe('general tests', () => {
     expect(data.toString()).toEqual('contents');
     expect(() => fs.readdirSync(src)).toThrow('ENOENT');
   });
+  test('rename renames a single file', async () => {
+    // setup
+    const src = createSrcWithFile();
+    const dest = createDest();
+    // action
+    await ff.rename(src, dest);
+    // result
+    const data = fs.readFileSync(path.join(dest, fileName));
+    expect(data).toBeDefined();
+    expect(data.toString()).toEqual('contents');
+    expect(() => fs.readdirSync(src)).toThrow('ENOENT');
+  });
   test('rmrf deletes dir with subdirs and files', async () => {
     // setup
     const src = createSrcWithFile();

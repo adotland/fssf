@@ -6,7 +6,7 @@
 [![License: ISC][license-img]](LICENSE)
 [![Node.js Version][node-version-image]][node-version-url]
 [![Build][github-wf]][build-url]
-
+<!-- [![install size][install-size-badge]](packagephobia-url) -->
 
 Promise based wrapper for node:fs
 
@@ -58,6 +58,8 @@ await ff.write(stringValue, __dirname, 'file.txt');
 
 ✓ **mv** moves all files and directories from one dir to another and deletes src directory
 
+✓ **rename** renames a single file
+
 ✓ **rmrf** deletes dir with subdirs and files
 
 ✓ **cp** copies dir contents recursively to another dir
@@ -92,3 +94,5 @@ await ff.write(stringValue, __dirname, 'file.txt');
 [license-img]: https://img.shields.io/badge/License-ISC-green.svg?style=flat-square
 [github-wf]: https://img.shields.io/github/workflow/status/adotland/fssf/shipit.svg?style=flat-square
 [build-url]: https://github.com/adotland/fssf/actions
+<!-- [install-size-badge]: https://packagephobia.com/badge?p=fssf
+[packagephobia-url]: https://packagephobia.com/result?p=fssf&style=flat-square -->
