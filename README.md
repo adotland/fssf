@@ -45,6 +45,18 @@ const obj = await ff.readJson(__dirname, 'file.json');
 await ff.writeCsv(obj.arrayList, ['header1', 'header2'], __dirname, 'file.csv');
 const doubleArray = await ff.readCsv(__dirname, 'file.csv');
 
+const objList = [
+  {
+    header1: 'value1',
+    header2: 'value2',
+  },
+  {
+    header2: 'value4',
+  }
+]
+
+await ff.objToCsv(objList, __dirname, 'file.tsv', '\t');
+
 // GENERAL
 const stringValue = 'class is called ff, but library is called fssf';
 await ff.write(stringValue, __dirname, 'file.txt');
@@ -85,6 +97,10 @@ await ff.write(stringValue, __dirname, 'file.txt');
 ✓ **writeCsv** takes double array and writes to csv file
 
 ✓ **appendCsv** adds lines to existing csv file
+
+✓ **csvToObj** returns Array of Objects representing csv file data
+
+✓ **objToCsv** takes object and writes to csv file
 
 
 [npm-image]: https://img.shields.io/npm/v/fssf.svg?style=flat-square

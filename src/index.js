@@ -39,13 +39,9 @@ const _cp_polyfill = async (src, dest) => {
   }
 };
 
-const _trim = (str, delimiter) => {
-  var re = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
-  if (delimiter.match(re)) {
-    return str;
-  } else {
-    return str.replace(re, '');
-  }
+const _trim = (str) => {
+  var re = /^[\s\uFEFF\xA0\r]+|[\s\uFEFF\xA0\r]+$/g;
+  return str.replace(re, '');
 }
 
 // fs.cp (v16.7.0)
@@ -191,18 +187,66 @@ export class ff {
   static async readCsv(path, fileName = '', parseLines = true, delimiter = ',', stripHeader = true) {
     const data = await this.read(path, fileName);
     if (data === '') return [];
-    let result = data.split('\n').map(d => _trim(d, delimiter));
+    let result = data.split('\n');
     if (stripHeader) {
       result.shift();
     }
     if (parseLines) {
-      result = result.map(line => line.split(delimiter));
+      result = result.map(line => line.split(delimiter).map(d => _trim(d)));
+    } else {
+      result = result.map(d => _trim(d))
     }
     const lastLine = result[result.length - 1];
-    if (lastLine && lastLine.length === 1 && typeof(lastLine[0]) === 'string' && lastLine[0] === '') {
+    if (lastLine && lastLine.length === 1 && typeof (lastLine[0]) === 'string' && lastLine[0] === '') {
       result.pop();
     }
     return result;
+  }
+  /**
+   * @param  {string} path
+   * @param  {string} [fileName='']
+   * @param  {boolean} [parseLines=true]
+   * @param  {string} [delimiter=',']
+   * @returns  {Promise<Array<Object>>}
+   */
+  static async csvToObj(path, fileName = '', delimiter = ',') {
+    const dataList = await this.readCsv(path, fileName, true, delimiter, false);
+    const headers = dataList.shift();
+    const retval = [];
+    dataList.forEach(data => {
+      const obj = {};
+      for (let i = 0, len = data.length; i < len; i++) {
+        obj[headers[i]] = data[i];
+      }
+      retval.push(obj);
+    });
+    return retval;
+  }
+  /**
+   * @param  {Array<Object>} data
+   * @param  {string} path
+   * @param  {string} [fileName='']
+   * @param  {string} [delimiter=',']
+   * @returns  {Promise<void>}
+   */
+  static async objToCsv(data, path, fileName = '', delimiter = ',') {
+    // allow for missing keys
+    let fields = new Set();
+    data.forEach(d => {
+      Object.keys(d).forEach(f => fields.add(f))
+    });
+    fields = Array.from(fields);
+    // array of value arrays
+    const dataList = [];
+    for (let i = 0, len = data.length; i < len; i++) {
+      const objList = [];
+      for (let j = 0, len2 = fields.length; j < len2; j++) {
+        objList.push(data[i][fields[j]] ?? '')
+      }
+      dataList.push(objList);
+    }
+    const dataStr = _convertArrCsv(dataList, fields, delimiter);
+    return await ff.write(dataStr, path, fileName);
   }
   /**
    * @param  {Array<Array<any>>} data

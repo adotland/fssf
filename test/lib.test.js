@@ -232,4 +232,40 @@ describe('general tests', () => {
     const formatted = data.toString().replace(/\n/g,' ');
     expect(formatted).toBe('header1,header2 value1,value2 value3,value4 value5,value6 ');
   })
+  test('csvToObj returns Array of Objects representing csv file data', async () => {
+    // setup
+    const src = createSrcWithoutFile();
+    fs.writeFileSync(path.join(src, fileNameCsv), 'header1\theader2\nvalue1\tvalue2\n\tvalue4\nvalue5\t\n');
+    // action
+    const data = await ff.csvToObj(src, fileNameCsv, '\t');
+    // result
+    expect(data).toBeDefined;
+    expect(data.length).toBe(3);
+    expect(data[0]['header1']).toBe('value1');
+    expect(data[0]['header2']).toBe('value2');
+    expect(data[1]['header1']).toBe('');
+    expect(data[1]['header2']).toBe('value4');
+    expect(data[2]['header1']).toBe('value5');
+    expect(data[2]['header2']).toBe('');
+  });
+  test('objToCsv takes object and writes to csv file', async () => {
+    // setup
+    const src = createSrcWithoutFile();
+    const objList = [
+      {
+        header1: 'value1',
+        header2: 'value2',
+      },
+      {
+        header2: 'value4',
+      }
+    ]
+    // action
+    await ff.objToCsv(objList, src, fileNameCsv);
+    // result
+    const data = fs.readFileSync(path.join(src, fileNameCsv));
+    expect(data).toBeDefined();
+    const formatted = data.toString().replace(/\n/g,' ');
+    expect(formatted).toBe('header1,header2 value1,value2 ,value4 ');
+  });
 });
