@@ -64,9 +64,9 @@ await ff.write(stringValue, __dirname, 'file.txt');
 
 # API
 
-✓ **path** return formatted string
+✓ **path** return formatted path as string
 
-✓ **touch** creates file
+✓ **touch** create empty file at path
 
 ✓ **mv** moves all files and directories from one dir to another and deletes src directory
 
@@ -80,13 +80,13 @@ await ff.write(stringValue, __dirname, 'file.txt');
 
 ✓ **write** creates and saves file at expected location
 
-✓ **readdir** returns array with only file names
+✓ **readdir** recursively read directory and return array of names
 
 ✓ **mkdir** creates directory at given path
 
 ✓ **append** adds data to existing file
 
-✓ **stat** returns stat in promise
+✓ **stat** returns stat object in promise
 
 ✓ **readJson** returns Object from file containing json
 

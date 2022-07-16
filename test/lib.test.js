@@ -35,7 +35,7 @@ const createDest = () => {
 }
 
 describe('general tests', () => {
-  test('path return formatted string', () => {
+  test('return formatted path as string', () => {
     // setup
     const pathParts = ['/folder1', './../folder2', 'file.ext'];
     const expectedPath = '/folder2/file.ext';
@@ -45,7 +45,7 @@ describe('general tests', () => {
     expect(formattedPath).toBeDefined();
     expect(formattedPath).toBe(expectedPath);
   });
-  test('touch creates file', async () => {
+  test('create empty file at path', async () => {
     // setup
     const fileName = 'file.txt';
     // action
@@ -99,7 +99,7 @@ describe('general tests', () => {
     expect(data.length).toBe(1);
     expect(data).toEqual(['file.txt'])
   });
-  test('read gets file contents as string', async () => {
+  test('recursively read directory and return array of names', async () => {
     // setup
     const src = createSrcWithFile();
     // action
@@ -149,7 +149,7 @@ describe('general tests', () => {
     const fileContents = fs.readFileSync(path.join(src, fileName)).toString();
     expect(fileContents).toBe('contentsline2');
   });
-  test('stat returns stat in promise', async () => {
+  test('stat returns stat object in promise', async () => {
     // setup
     const src = createSrcWithFile();
     // action

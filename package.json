@@ -18,8 +18,7 @@
     "test": "jest",
     "bnt": "npm run build && npm run test",
     "preversion": "npm test",
-    "version": "auto-changelog && git add CHANGELOG.md",
-    "postversion": "git push origin main"
+    "version": "auto-changelog -p && git add CHANGELOG.md"
   },
   "repository": {
     "type": "git",
