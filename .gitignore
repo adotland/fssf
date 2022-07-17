@@ -3,3 +3,4 @@ _*
 .vscode
 dist/
 coverage/
+.*/

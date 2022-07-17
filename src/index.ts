@@ -54,7 +54,7 @@ const _cp_polyfill = async (src: string, dest: string): Promise<void> => {
  * @param str
  */
 const _trim = (str: string): string => {
-  var re = /^[\s\uFEFF\xA0\r]+|[\s\uFEFF\xA0\r]+$/g;
+  var re = /^(?:[\s\uFEFF\xA0\r]+|[\s\uFEFF\xA0\r]+)$/g;
   return str.replace(re, "");
 };
 
