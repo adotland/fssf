@@ -50,19 +50,12 @@ const _cp_polyfill = async (src: string, dest: string): Promise<void> => {
       : await fsCopyFile(srcPath, destPath);
   }
 };
-/**
- * @param str
- */
-const _trim = (str: string): string => {
-  var re = /^(?:[\s\uFEFF\xA0\r]+|[\s\uFEFF\xA0\r]+)$/g;
-  return str.replace(re, "");
-};
 
 /***************
 main
 ***************/
 
-export class ff {
+class FF {
   /**
    * substitute for calling path.join
    * @param paths paths to be combined
@@ -73,11 +66,11 @@ export class ff {
   }
   /**
    * create empty file at path
-   * @param path
+   * @param filePath
    * @param fileName filename can be in path or here
    */
-  static async touch(path: string, fileName = ""): Promise<void> {
-    return ff.write("", path, fileName);
+  static async touch(filePath: string, fileName = ""): Promise<void> {
+    return FF.write("", filePath, fileName);
   }
   /**
    * moves all files and directories from one dir to another and deletes src directory
@@ -85,10 +78,10 @@ export class ff {
    * @param dest
    */
   static async mv(src: string, dest: string): Promise<void> {
-    const srcPath = ff.path(src);
-    const destPath = ff.path(dest);
-    await ff.cp(srcPath, destPath);
-    await ff.rmrf(srcPath);
+    const srcPath = FF.path(src);
+    const destPath = FF.path(dest);
+    await FF.cp(srcPath, destPath);
+    await FF.rmrf(srcPath);
   }
   /**
    * renames a single file
@@ -96,16 +89,16 @@ export class ff {
    * @param dest
    */
   static async rename(src: string, dest: string): Promise<void> {
-    const srcPath = ff.path(src);
-    const destPath = ff.path(dest);
+    const srcPath = FF.path(src);
+    const destPath = FF.path(dest);
     await fsRename(srcPath, destPath);
   }
   /**
    * deletes dir with subdirs and files
-   * @param path
+   * @param dirPath
    */
-  static async rmrf(path: string): Promise<void> {
-    await fsRm(path, { recursive: true, force: true });
+  static async rmrf(dirPath: string): Promise<void> {
+    await fsRm(dirPath, { recursive: true, force: true });
   }
   /**
    * copies dir contents recursively to another dir
@@ -113,102 +106,102 @@ export class ff {
    * @param dest
    */
   static async cp(src: string, dest: string): Promise<void> {
-    return await _cp_polyfill(src, dest);
+    return _cp_polyfill(src, dest);
   }
   /**
    * gets file contents as string
-   * @param path
+   * @param filePath
    * @param fileName filename can be in path or here
    * @returns file data as string
    */
-  static async read(path: string, fileName: string = ""): Promise<string> {
-    const fullPath = ff.path(path, fileName);
-    const buffer = await fsReadFile(fullPath);
+  static async read(filePath: string, fileName: string = ""): Promise<string> {
+    const fullPath = FF.path(filePath, fileName);
+    const buffer = await fsReadFile(fullPath, { encoding: "utf8" });
     return buffer.toString();
   }
   /**
    * creates and saves file at expected location
    * @param data
-   * @param path
+   * @param filePath
    * @param fileName
    */
   static async write(
     data: string,
-    path: string,
+    filePath: string,
     fileName: string = ""
   ): Promise<void> {
-    const fullPath = ff.path(path, fileName);
+    const fullPath = FF.path(filePath, fileName);
     await fsWriteFile(fullPath, data);
   }
   /**
    * recursively read directory and return array of names
-   * @param path
+   * @param dirPath
    */
-  static async readdir(path: string): Promise<string[]> {
-    const fullPath = ff.path(path);
-    return await fsReaddir(fullPath);
+  static async readdir(dirPath: string): Promise<string[]> {
+    const fullPath = FF.path(dirPath);
+    return fsReaddir(fullPath);
   }
   /**
    * creates directory at given path
-   * @param path
+   * @param dirPath
    */
-  static async mkdir(path: string): Promise<string | undefined> {
-    const fullPath = ff.path(path);
-    return await fsMkdir(fullPath, { recursive: true });
+  static async mkdir(dirPath: string): Promise<string | undefined> {
+    const fullPath = FF.path(dirPath);
+    return fsMkdir(fullPath, { recursive: true });
   }
   /**
    * adds data to existing file
    * @param data
-   * @param path
+   * @param filePath
    * @param fileName filename can be in path or here
    * @returns
    */
   static async append(
     data: string,
-    path: string,
+    filePath: string,
     fileName: string = ""
   ): Promise<void> {
-    const fullPath = ff.path(path, fileName);
-    return await fsAppendFile(fullPath, data);
+    const fullPath = FF.path(filePath, fileName);
+    return fsAppendFile(fullPath, data);
   }
   /**
    * returns stat object in promise
-   * @param path
+   * @param filePath
    * @returns stats object
    */
-  static async stat(path: string): Promise<Object> {
-    const fullPath = ff.path(path);
-    return await fsStat(fullPath);
+  static async stat(filePath: string): Promise<Object> {
+    const fullPath = FF.path(filePath);
+    return fsStat(fullPath);
   }
   /**
    * reads file as JSON
-   * @param path
+   * @param filePath
    * @param fileName can be in path or here
    * @returns Object from file containing json
    */
-  static async readJson(path: any, fileName: string = ""): Promise<any> {
-    const fullPath = ff.path(path, fileName);
-    const dataStr = await ff.read(fullPath);
+  static async readJson(filePath: any, fileName: string = ""): Promise<any> {
+    const fullPath = FF.path(filePath, fileName);
+    const dataStr = await FF.read(fullPath);
     return JSON.parse(dataStr);
   }
   /**
    * converts object to JSON and writes to file
    * @param obj
-   * @param path
+   * @param filePath
    * @param fileName
    * @param spaces pass to JSON.stringify
    */
   static async writeJson(
     obj: any,
-    path: any,
+    filePath: any,
     fileName: string = "",
     spaces: number = 0
   ): Promise<void> {
-    await ff.write(JSON.stringify(obj, null, spaces), path, fileName);
+    await FF.write(JSON.stringify(obj, null, spaces), filePath, fileName);
   }
   /**
    * read file as csv with specified delimiter
-   * @param path
+   * @param filePath
    * @param fileName
    * @param parseLines can return array of unprocessed lines
    * @param delimiter supports ',' '\t' etc.
@@ -216,13 +209,13 @@ export class ff {
    * @returns double array from csv file
    */
   static async readCsv(
-    path: string,
+    filePath: string,
     fileName: string = "",
     parseLines: boolean = true,
     delimiter: string = ",",
     stripHeader: boolean = true
   ): Promise<Array<Array<string>>> {
-    const data = await ff.read(path, fileName);
+    const data = await FF.read(filePath, fileName);
     if (data === "") return [];
     let csvLines = data.split("\n");
     if (stripHeader) {
@@ -231,7 +224,7 @@ export class ff {
     let result: Array<Array<string>>;
     if (parseLines) {
       result = csvLines.map((line) =>
-        line.split(delimiter).map((d) => _trim(d))
+        line.split(delimiter).map((d) => d.trim())
       );
       const lastLine = result[result.length - 1];
       if (
@@ -243,23 +236,23 @@ export class ff {
         result.pop();
       }
     } else {
-      result = [csvLines.map((d) => _trim(d))];
+      result = [csvLines.map((d) => d.trim())];
     }
     return result;
   }
   /**
    * read csv file and convert to object list
-   * @param path
+   * @param filePath
    * @param fileName
    * @param delimiter
    * @returns Array of Objects representing csv file data
    */
   static async csvToObj(
-    path: string,
+    filePath: string,
     fileName: string = "",
     delimiter: string = ","
   ): Promise<Array<Object>> {
-    const dataList = await ff.readCsv(path, fileName, true, delimiter, false);
+    const dataList = await FF.readCsv(filePath, fileName, true, delimiter, false);
     const headerList = dataList.shift();
     if (headerList) {
       const HeaderAsKeyList = [...headerList] as const;
@@ -282,13 +275,13 @@ export class ff {
   /**
    * takes object and writes to csv file
    * @param data
-   * @param path
+   * @param filePath
    * @param fileName
    * @param delimiter
    */
   static async objToCsv(
     data: Array<Object>,
-    path: string,
+    filePath: string,
     fileName = "",
     delimiter = ","
   ): Promise<void> {
@@ -313,40 +306,42 @@ export class ff {
       dataList.push(objList);
     }
     const dataStr = _convertArrCsv(dataList, headerList, delimiter);
-    return await ff.write(dataStr, path, fileName);
+    return FF.write(dataStr, filePath, fileName);
   }
   /**
    * takes double array and writes to csv file
    * @param data
    * @param fields
-   * @param path
+   * @param filePath
    * @param fileName
    * @param delimiter
    */
   static async writeCsv(
     data: Array<Array<any>>,
     fields: Array<string>,
-    path: string,
+    filePath: string,
     fileName = "",
     delimiter = ","
   ) {
     const dataStr = _convertArrCsv(data, fields, delimiter);
-    return await ff.write(dataStr, path, fileName);
+    return FF.write(dataStr, filePath, fileName);
   }
   /**
    * adds lines to existing csv file
    * @param data
-   * @param path
+   * @param filePath
    * @param fileName
    * @param delimiter
    */
   static async appendCsv(
     data: Array<Array<any>>,
-    path: string,
+    filePath: string,
     fileName = "",
     delimiter = ","
   ) {
     const dataStr = _convertArrCsv(data, null, delimiter);
-    return await ff.append("\n" + dataStr, path, fileName);
+    return FF.append("\n" + dataStr, filePath, fileName);
   }
 }
+
+export {FF as ff};

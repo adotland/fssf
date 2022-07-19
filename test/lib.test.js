@@ -47,11 +47,11 @@ describe('general tests', () => {
   });
   test('create empty file at path', async () => {
     // setup
-    const fileName = 'file.txt';
+    const touchFileName = 'file.txt';
     // action
-    await ff.touch(testFilesPath, fileName);
+    await ff.touch(testFilesPath, touchFileName);
     // result
-    const data = fs.readFileSync(path.join(testFilesPath, fileName));
+    const data = fs.readFileSync(path.join(testFilesPath, touchFileName));
     expect(data).toBeDefined();
     expect(data.toString()).toEqual('');
   });
@@ -191,10 +191,26 @@ describe('general tests', () => {
     expect(data[0][0]).toBe('value1');
     expect(data[0][1]).toBe('value2');
   });
-  test('readCsv returns double array from tsv file', async () => {
+  test('readCsv returns double array from tab separated tsv file', async () => {
     // setup
     const src = createSrcWithoutFile();
     fs.writeFileSync(path.join(src, fileNameCsv), 'header1\theader2\nvalue1\tvalue2\n\tvalue4\nvalue5\t\n');
+    // action
+    const data = await ff.readCsv(src, fileNameCsv, true, '\t');
+    // result
+    expect(data).toBeDefined;
+    expect(data.length).toBe(3);
+    expect(data[0][0]).toBe('value1');
+    expect(data[0][1]).toBe('value2');
+    expect(data[1][0]).toBe('');
+    expect(data[1][1]).toBe('value4');
+    expect(data[2][0]).toBe('value5');
+    expect(data[2][1]).toBe('');
+  });
+  test('readCsv returns double array from tsv file containing extra whitespace', async () => {
+    // setup
+    const src = createSrcWithoutFile();
+    fs.writeFileSync(path.join(src, fileNameCsv), 'header1\xa0\theader2\n﻿value1\t value2\n\tvalue4 \n value5 \t\n');
     // action
     const data = await ff.readCsv(src, fileNameCsv, true, '\t');
     // result
